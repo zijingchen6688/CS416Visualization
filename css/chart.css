@@ -1,0 +1,17 @@
+li {
+    font-size: 12px;
+}
+
+
+div {
+    display: block;
+}
+
+.bar {
+    fill: yellowgreen;
+}
+
+.chart text {
+    font: 11px sans-serif;
+    text-anchor: end;
+}
