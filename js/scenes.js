@@ -12,7 +12,6 @@ const offenseGroups = {};
 const offensesByDay = {};
 const offensesByHour = {};
 const offensesByMonth = {};
-const offensesBydistrict = {};
 
 const x_offenses = d3.scaleBand();
 const y_offenseCount = d3.scaleLinear();
@@ -34,11 +33,6 @@ const y_offensesByMonthCount = d3.scaleLinear();
 const y_offensesByMonthCount_axis = d3.scaleLinear();
 const yAxis4 = d3.axisLeft();
 
-const x_district = d3.scaleBand();
-const y_offensesBydistrictCount = d3.scaleLinear();
-const y_offensesBydistrictCount_axis = d3.scaleLinear();
-const yAxis4 = d3.axisLeft();
-
 function initializeVisualization() {
 	loadScene0();
 	d3.select("#b0").classed("active",true);
@@ -58,8 +52,7 @@ function loadcsvdata( dataloaded ) {
 			date: d.OCCURRED_ON_DATE,
             offense: d.OFFENSE_CODE_GROUP,
 			desc: d.OFFENSE_DESCRIPTION,
-			street: d.STREET,
-			district: d.DISTRICT
+			street: d.STREET
         };
 		
 		if (!offenseGroups[dataobj.offense])
@@ -81,11 +74,6 @@ function loadcsvdata( dataloaded ) {
 				offensesByMonth[dataobj.month] = { month: dataobj.month, index: dataobj.month_index, offenseCount: 0};
 
 		offensesByMonth[dataobj.month].offenseCount++;
-
-		if (!offensesBydistrict[dataobj.district])
-			offensesBydistrict[dataobj.district] = {district: dataobj.district, offenseCount: 0};
-
-		offensesBydistrict[dataobj.district].offenseCount++;
 	
         return dataobj;
 
@@ -157,27 +145,6 @@ function calculateScales3(){
         .range([chart_dimensions.height, 0]);
 }
 
-//create district for button 4
-// function calculateScales4(){
-// 	d3.select("#b0").classed("active",false);
-// 	d3.select("#b1").classed("active",false);
-// 	d3.select("#b2").classed("active",false);
-// 	d3.select("#b3").classed("active",false);
-// 	d3.select("#b4").classed("active",true);
-// 	d3.select("#b5").classed("active",false);
-// 	d3.select(".selection").selectAll("*").remove();
-// 	//d3.selectAll("#selection").style("visibility","hidden");
-// 	const referenceData3 = d3.values(offensesByHour);
-// 	//console.log(referenceData3);
-	
-// 	x_hours.range([0, chart_dimensions.width])
-//         .domain(d3.keys(offensesByHour));
-//     y_offensesByHourCount.domain([0, d3.max(referenceData3, function(d) { return d.offenseCount; })])
-//         .range([0, chart_dimensions.height]);
-// 	y_offensesByHourCount_axis.domain([0, d3.max(referenceData3, function(d) { return d.offenseCount; })])
-//         .range([chart_dimensions.height, 0]);
-// }
-// new district plot
 function calculateScales4(){
 	d3.select("#b0").classed("active",false);
 	d3.select("#b1").classed("active",false);
@@ -187,14 +154,14 @@ function calculateScales4(){
 	d3.select("#b5").classed("active",false);
 	d3.select(".selection").selectAll("*").remove();
 	//d3.selectAll("#selection").style("visibility","hidden");
-	const referenceData3 = d3.values(offensesBydistrict);
+	const referenceData3 = d3.values(offensesByHour);
 	//console.log(referenceData3);
 	
-	x_district.range([0, chart_dimensions.width])
-        .domain(d3.keys(offensesBydistrict));
-    y_offensesBydistrictCount.domain([0, d3.max(referenceData3, function(d) { return d.offenseCount; })])
+	x_hours.range([0, chart_dimensions.width])
+        .domain(d3.keys(offensesByHour));
+    y_offensesByHourCount.domain([0, d3.max(referenceData3, function(d) { return d.offenseCount; })])
         .range([0, chart_dimensions.height]);
-	y_offensesBydistrictCount_axis.domain([0, d3.max(referenceData3, function(d) { return d.offenseCount; })])
+	y_offensesByHourCount_axis.domain([0, d3.max(referenceData3, function(d) { return d.offenseCount; })])
         .range([chart_dimensions.height, 0]);
 }
 
@@ -544,81 +511,48 @@ function showDaysAxis() {
         .text("Days of Week");
 }
 
-// comment out 
-// function createOffensesByHourCountBars() {
-// var div = d3.select("body").append("div");
+function createOffensesByHourCountBars() {
+var div = d3.select("body").append("div");
 
-// 	d3.select("#chart-div").insert("div").classed("heading",true);
-// 	d3.select(".heading").insert("br");
-// 	d3.select(".heading").insert("br");
-// 	d3.select(".heading").insert("h4").text("Crimes over Hours").style("text-anchor", "start");
-// 	d3.select("#chart-div").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-// 	d3.select(".parascenes").insert("p").text("The graph shows crimes reported over 3 years and their frequency over hours of a day.");
-// 	d3.select(".parascenes").insert("br");
-// 	d3.select(".parascenes").insert("p").text("Crime rates are low between 1-7 in the morning, and gradually rise throughout the day, peaking around 6 PM.");
-// 	d3.select(".parascenes").insert("br");
-// 	d3.select(".parascenes").insert("p").text("Click on next slide for exploring data by your self.");
+	d3.select("#chart-div").insert("div").classed("heading",true);
+	d3.select(".heading").insert("br");
+	d3.select(".heading").insert("br");
+	d3.select(".heading").insert("h4").text("Crimes over Hours").style("text-anchor", "start");
+	d3.select("#chart-div").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
+	d3.select(".parascenes").insert("p").text("The graph shows crimes reported over 3 years and their frequency over hours of a day.");
+	d3.select(".parascenes").insert("br");
+	d3.select(".parascenes").insert("p").text("Crime rates are low between 1-7 in the morning, and gradually rise throughout the day, peaking around 6 PM.");
+	d3.select(".parascenes").insert("br");
+	d3.select(".parascenes").insert("p").text("Click on next slide for exploring data by your self.");
 	
-//     d3.select(".chart")
-// 		.selectAll(".bar-offenseCount")
-//         .data(d3.values(offensesByHour))
-//         .enter()
-//         .append("g")
-//         .classed("bar-offenseCount",true)
-//         .attr("transform",
-//             function (d) {
-//                 return "translate(" + (margin.left + (8 + x_hours(d.hour)-x_hours.bandwidth()/2)) + ", " + margin.top + ")";
-//             })
-//         .append("rect")
-//         .classed("rect-offenseCount",true)
-//         .attr("x", x_hours.bandwidth()/2)
-//         .attr("y", chart_dimensions.height)
-// 		.attr("width", x_hours.bandwidth()/2 - 1)
-//         .attr("height",0);
-// }
+    d3.select(".chart")
+		.selectAll(".bar-offenseCount")
+        .data(d3.values(offensesByHour))
+        .enter()
+        .append("g")
+        .classed("bar-offenseCount",true)
+        .attr("transform",
+            function (d) {
+                return "translate(" + (margin.left + (8 + x_hours(d.hour)-x_hours.bandwidth()/2)) + ", " + margin.top + ")";
+            })
+        .append("rect")
+        .classed("rect-offenseCount",true)
+        .attr("x", x_hours.bandwidth()/2)
+        .attr("y", chart_dimensions.height)
+		.attr("width", x_hours.bandwidth()/2 - 1)
+        .attr("height",0);
+}
 
-function createOffensesByDistrictCountBars() {
-	var div = d3.select("body").append("div");
-	
-		d3.select("#chart-div").insert("div").classed("heading",true);
-		d3.select(".heading").insert("br");
-		d3.select(".heading").insert("br");
-		d3.select(".heading").insert("h4").text("Which District Does the Crime Usually Happen?").style("text-anchor", "start");
-		d3.select("#chart-div").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-		d3.select(".parascenes").insert("p").text("The graph shows where does the crime happens, more specifically, in which district");
-		d3.select(".parascenes").insert("br");
-		d3.select(".parascenes").insert("p").text("Most crime happens in: ");
-		d3.select(".parascenes").insert("br");
-		d3.select(".parascenes").insert("p").text("Click next button to continue view more:)");
-		
-		d3.select(".chart")
-			.selectAll(".bar-offenseCount")
-			.data(d3.values(offensesBydistrict))
-			.enter()
-			.append("g")
-			.classed("bar-offenseCount",true)
-			.attr("transform",
-				function (d) {
-					return "translate(" + (margin.left + (8 + x_district(d.district)-x_district.bandwidth()/2)) + ", " + margin.top + ")";
-				})
-			.append("rect")
-			.classed("rect-offenseCount",true)
-			.attr("x", x_district.bandwidth()/2)
-			.attr("y", chart_dimensions.height)
-			.attr("width", x_district.bandwidth()/2 - 1)
-			.attr("height",0);
-	}
-
-function showOffensesByDistrictCountBars() {
+function showOffensesByHourCountBars() {
 
     d3.selectAll(".rect-offenseCount")
         .transition()
         .duration(1000)
         .attr("height", function (d) {
-            return y_offensesBydistrictCount(d.offenseCount);
+            return y_offensesByHourCount(d.offenseCount);
         })
         .attr("y", function (d) {
-            return (chart_dimensions.height - y_offensesBydistrictCount(d.offenseCount));
+            return (chart_dimensions.height - y_offensesByHourCount(d.offenseCount));
         });
 		
 	d3.select(".chart")
@@ -713,8 +647,8 @@ function showOffensesByDistrictCountBars() {
 		.attr("fill","black");
 }
 
-function createOffensesByDistrictCountAxis() {
-    yAxis3.scale(y_offensesBydistrictCount_axis)
+function createOffensesByHourCountAxis() {
+    yAxis3.scale(y_offensesByHourCount_axis)
         .tickSize(10).ticks(20);
 
     d3.select(".chart").append("g")
@@ -732,7 +666,7 @@ function createOffensesByDistrictCountAxis() {
         .text("Number of Records");
 }
 
-function showOffensesByDistrictCountAxis() {
+function showOffensesByHourCountAxis() {
     d3.select("#yAxis")
         .transition()
         .duration(1000)
@@ -753,9 +687,9 @@ function showOffensesByDistrictCountAxis() {
             ", rotate(-90)");
 }
 
-function showDistrictAxis() {
-    const xAxis = d3.axisBottom().scale(x_district)
-        .ticks(d3.keys(offensesBydistrict));
+function showHoursAxis() {
+    const xAxis = d3.axisBottom().scale(x_hours)
+        .ticks(d3.keys(offensesByHour));
 
     d3.select(".chart").append("g")
         .attr("id", "xAxis")
@@ -775,10 +709,9 @@ function showDistrictAxis() {
             "translate(" + (margin.left + chart_dimensions.width / 2) + " ," +
             (margin.top + chart_dimensions.height + 50) + ")")
         .style("text-anchor", "middle")
-        .text("District");
+        .text("Hours");
 }
 
-// Month ------------------------------------------------------------------------------------------------------------------
 function createOffensesByMonthCountBars() {
 var div = d3.select("body").append("div");
 
@@ -1111,14 +1044,13 @@ function loadScene0() {
 	d3.select("#b5").classed("active",false);
 	//d3.selectAll("#selection").style("visibility","hidden");
 	d3.select("#chart-div").insert("div").classed("heading",true);
-	d3.select(".heading").insert("h2").text("Summary").style("text-anchor", "start");
+	d3.select(".heading").insert("h2").text("Introduction").style("text-anchor", "start");
 	d3.select("#chart-div").insert("div").classed("para",true);
-	d3.select(".para").insert("p").text("The time range of this crime data is from Records begin in June 14, 2015 and continue to September 3, 2018.");
-	d3.select(".para").insert("p").text("Crime incident reports are provided by Boston Police Department (BPD) to document the initial details surrounding an incident to which BPD officers respond. This is a dataset containing records from the new crime incident report system, which includes a reduced set of fields focused on capturing the type of incident as well as when and where it occurred.");
-	d3.select(".para").insert("p").text("In this crime analysis, I want to know: ");
-	d3.select(".para").insert("p").text("1. What types of crimes are most common?");
-	d3.select(".para").insert("p").text("2. When does crimes usually happen?");
-	d3.select(".para").insert("p").text("3. Where are different types of crimes most likely to occur?");
+	d3.select(".para").insert("p").text("This website contains narrative visualization presenting data related to crimes happened in Boston. Crime incident reports are provided by Boston Police Department (BPD) to document the initial details surrounding an incident to which BPD officers respond.");
+	d3.select(".para").insert("p").text("This data presented in this website is from June 14, 2015 and continue to September 3, 2018.");
+	d3.select(".para").insert("p").text("The narrative visualization is divided into two parts. The first part presents different bar charts showing number of crimes based on types, crimes over the month, day and hour to understand whether the frequency of crimes change over the month, day or hour?");
+	d3.select(".para").insert("p").text("The second part allows a reader to explore the data by type of the crime over hours of a day.");
+	d3.select(".para").insert("p").text("Use page numbers shown in the top left to navigate to different scenes in this narrative visualization.");
 }
 
 function loadScene1() {
@@ -1158,11 +1090,11 @@ function loadScene4() {
 	initializeChartArea();
     calculateScales4();
 
-    createOffensesByDistrictCountBars();
-	showOffensesByDistrictCountBars();
-	createOffensesByDistrictCountAxis();
-	showOffensesByDistrictCountAxis();
-	showDistrictAxis();
+    createOffensesByHourCountBars();
+	showOffensesByHourCountBars();
+	createOffensesByHourCountAxis();
+	showOffensesByHourCountAxis();
+	showHoursAxis();
 }
 
 function loadScene5() {
