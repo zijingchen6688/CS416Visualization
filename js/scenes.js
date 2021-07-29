@@ -83,7 +83,7 @@ function loadcsvdata( dataloaded ) {
 		offensesByMonth[dataobj.month].offenseCount++;
 
 		if (!offensesBydistrict[dataobj.district])
-		offensesBydistrict[dataobj.district] = {district: dataobj.district, index: dataobj.district_index, offenseCount: 0};
+			offensesBydistrict[dataobj.district] = {district: dataobj.district, offenseCount: 0};
 
 		offensesBydistrict[dataobj.district].offenseCount++;
 	
