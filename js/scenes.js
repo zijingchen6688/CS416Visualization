@@ -104,10 +104,10 @@ function calculateScales1(){
 	d3.select("#b5").classed("active",false);
 	d3.select(".selection").selectAll("*").remove();
 	//d3.selectAll("#selection").style("visibility","hidden");
-	const referenceData = d3.values(offenseGroups);
+	const referenceData = d3.values(offensesByDistrict);
 	//console.log(referenceData);
-	x_offenses.range([0, chart_dimensions.width])
-        .domain(d3.keys(offenseGroups));
+	x_district.range([0, chart_dimensions.width])
+        .domain(d3.keys(offensesByDistrict));
     y_offenseCount.domain([0, d3.max(referenceData, function(d) { return d.offenseCount; })])
         .range([0, chart_dimensions.height]);
 	y_offenseCount_axis.domain([0, d3.max(referenceData, function(d) { return d.offenseCount; })])
@@ -183,39 +183,39 @@ function initializeChartArea() {
         .attr("height", canvas.height);
 }
 
-function createOffenseCountBars() {
+function createDistrictCountBars() {
 var div = d3.select("body").append("div");
 
 	d3.select("#chart-div").insert("div").classed("heading",true);
 	d3.select(".heading").insert("br");
 	d3.select(".heading").insert("br");
-	d3.select(".heading").insert("h4").text("Types of Serious Crimes").style("text-anchor", "start");
+	d3.select(".heading").insert("h4").text("Where does crimes happen most often?").style("text-anchor", "start");
 	d3.select("#chart-div").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-	d3.select(".parascenes").insert("p").text("The graph shows crimes reported over 3 years and their frequency by type of a crime.");
+	d3.select(".parascenes").insert("p").text("The graph shows how many crimes happens in different districts");
 	d3.select(".parascenes").insert("br");
-	d3.select(".parascenes").insert("p").text("Larceny is by far the most common serious crime, and homicides are pretty rare.");
+	d3.select(".parascenes").insert("p").text("We can see that");
 	d3.select(".parascenes").insert("br");
-	d3.select(".parascenes").insert("p").text("Click on next slide for frequency of crimes happening over each month.");
+	d3.select(".parascenes").insert("p").text("Click on next button to se more:)");
 	
     d3.select(".chart")
 		.selectAll(".bar-offenseCount")
-        .data(d3.values(offenseGroups))
+        .data(d3.values(offensesByDistrict))
         .enter()
         .append("g")
         .classed("bar-offenseCount",true)
         .attr("transform",
             function (d) {
-                return "translate(" + (margin.left + (20 + x_offenses(d.offense)-x_offenses.bandwidth()/2)) + ", " + margin.top + ")";
+                return "translate(" + (margin.left + (20 + x_district(d.district)-x_district.bandwidth()/2)) + ", " + margin.top + ")";
             })
         .append("rect")
         .classed("rect-offenseCount",true)
-        .attr("x", x_offenses.bandwidth()/2)
+        .attr("x", x_district.bandwidth()/2)
         .attr("y", chart_dimensions.height)
-		.attr("width", x_offenses.bandwidth()/2 - 1)
+		.attr("width", x_district.bandwidth()/2 - 1)
         .attr("height",0);
 }
 
-function showOffenseCountBars() {
+function showDistrictCountBars() {
 
     d3.selectAll(".rect-offenseCount")
         .transition()
@@ -237,46 +237,7 @@ function showOffenseCountBars() {
 		.attr("stroke-width",0.75)
 		.attr("stroke","gray");
 		
-	d3.select(".chart")
-		.append("rect")
-		.classed("scene-1-rect",true)
-		.attr("x",110)
-		.attr("y",660)
-		.attr("width",158)
-		.attr("height",60)
-		.attr("fill","lightgray")
-		.transition().duration(1000);
 	
-	d3.select(".chart")
-		.append("text")
-		.classed("scene-1-text",true)
-		.attr("x",237)
-		.attr("y",675)
-		.style("font-size","11px")
-		.attr("dy",".35em")
-		.text("Type of crimes with")
-		.attr("fill","black");
-		
-	d3.select(".chart")
-		.append("text")
-		.classed("scene-1-text-1",true)
-		.attr("x",257)
-		.attr("y",690)
-		.attr("dy",".35em")
-		.style("font-size","11px")
-		.text("low frequency - Homicide, ")
-		.attr("fill","black");
-	
-	d3.select(".chart")
-		.append("text")
-		.classed("scene-1-text-2",true)
-		.attr("x",267)
-		.attr("y",705)
-		.style("font-size","11px")
-		.attr("dy",".35em")
-		.text("other and commercial burglaries")
-		.attr("fill","black");	
-		
 	d3.select(".chart")
 		.append("line")
 		.classed("scene-1-line-2",true)
@@ -292,33 +253,33 @@ function showOffenseCountBars() {
 		.classed("scene-1-rect-2",true)
 		.attr("x",531)
 		.attr("y",380)
-		.attr("width",140)
+		.attr("width",280)
 		.attr("height",40)
-		.attr("fill","lightgray")
+		.attr("fill","lightyellow")
 		.transition().duration(1000);
 	
 	d3.select(".chart")
 		.append("text")
 		.classed("scene-1-text-3",true)
-		.attr("x",650)
+		.attr("x",770)
 		.attr("y",392)
-		.style("font-size","11px")
+		.style("font-size","15px")
 		.attr("dy",".35em")
-		.text("Type of crimes with")
+		.text("A15 has lowest number of crimes")
 		.attr("fill","black");
 		
 	d3.select(".chart")
 		.append("text")
 		.classed("scene-1-text-4",true)
-		.attr("x",660)
+		.attr("x",770)
 		.attr("y",407)
 		.attr("dy",".35em")
 		.style("font-size","11px")
-		.text("high frequency - Larceny")
+		.text("E5 district has low crimes as well")
 		.attr("fill","black");
 }
 
-function createOffenseCountAxis() {
+function createDistrictCountAxis() {
     yAxis.scale(y_offenseCount_axis)
         .tickSize(10).ticks(20);
 
@@ -337,7 +298,7 @@ function createOffenseCountAxis() {
         .text("Number of Records");
 }
 
-function showOffenseCountAxis() {
+function showDistrictCountAxis() {
     d3.select("#yAxis")
         .transition()
         .duration(1000)
@@ -359,8 +320,8 @@ function showOffenseCountAxis() {
 }
 
 function showOffenseAxis() {
-    const xAxis = d3.axisBottom().scale(x_offenses)
-        .ticks(d3.keys(offenseGroups));
+    const xAxis = d3.axisBottom().scale(x_district)
+        .ticks(d3.keys(offensesByDistrict));
 
     d3.select(".chart").append("g")
         .attr("id", "xAxis")
@@ -368,7 +329,7 @@ function showOffenseAxis() {
         .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_dimensions.height) + ")")
         .call(xAxis)
         .selectAll("text")
-		.call(wrap, x_offenses.bandwidth())
+		.call(wrap, x_district.bandwidth())
         .attr("x", -20)
         .attr("y", 20)
         .attr("dx", 0)
@@ -381,7 +342,7 @@ function showOffenseAxis() {
             "translate(" + (margin.left + chart_dimensions.width / 2) + " ," +
             (margin.top + chart_dimensions.height + 50) + ")")
         .style("text-anchor", "middle")
-        .text("Offense Group");
+        .text("District");
 }
 
 function wrap(text, width) {
@@ -1064,10 +1025,10 @@ function loadScene1() {
 	initializeChartArea();
     calculateScales1();
 
-    createOffenseCountBars();
-	showOffenseCountBars();
-	createOffenseCountAxis();
-	showOffenseCountAxis();
+    createDistrictCountBars();
+	showDistrictCountBars();
+	createDistrictCountAxis();
+	showDistrictCountAxis();
 	showOffenseAxis();
 }
 
