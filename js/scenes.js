@@ -8,12 +8,18 @@ const chart_dimensions = {
     height: canvas.height - (margin.top + margin.bottom)
 };
 
-const offenseGroups = {};
+// const offenseGroups = {};
 const offensesByDay = {};
 const offensesByHour = {};
 const offensesByMonth = {};
+const offensesByDistrict = {};
 
-const x_offenses = d3.scaleBand();
+// const x_offenses = d3.scaleBand();
+// const y_offenseCount = d3.scaleLinear();
+// const y_offenseCount_axis = d3.scaleLinear();
+// const yAxis = d3.axisLeft();
+
+const x_district = d3.scaleBand();
 const y_offenseCount = d3.scaleLinear();
 const y_offenseCount_axis = d3.scaleLinear();
 const yAxis = d3.axisLeft();
@@ -52,13 +58,14 @@ function loadcsvdata( dataloaded ) {
 			date: d.OCCURRED_ON_DATE,
             offense: d.OFFENSE_CODE_GROUP,
 			desc: d.OFFENSE_DESCRIPTION,
-			street: d.STREET
+			street: d.STREET,
+			district: d.DISTRICT
         };
 		
-		if (!offenseGroups[dataobj.offense])
-				offenseGroups[dataobj.offense] = { offense: dataobj.offense, offenseCount: 0};
+		if (!offensesByDistrict[dataobj.district])
+			offensesByDistrict[dataobj.district] = { district: dataobj.district, offenseCount: 0};
 
-		offenseGroups[dataobj.offense].offenseCount++;
+		offensesByDistrict[dataobj.district].offenseCount++;
 		
 		if (!offensesByDay[dataobj.day])
 				offensesByDay[dataobj.day] = { day: dataobj.day, index: dataobj.day_index, offenseCount: 0};
