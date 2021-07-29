@@ -427,7 +427,7 @@ var div = d3.select("body").append("div");
                 return "translate(" + (margin.left + (25 + x_days(d.day)-x_days.bandwidth()/2)) + ", " + margin.top + ")";
             })
         .append("rect")
-        .classed("rect-offenseCount",true)
+        .classed("bar",true)
         .attr("x", x_days.bandwidth()/2)
         .attr("y", chart_dimensions.height)
 		.attr("width", x_days.bandwidth()/2 - 1)
@@ -436,7 +436,7 @@ var div = d3.select("body").append("div");
 
 function showOffensesByDayCountBars() {
 
-    d3.selectAll(".rect-offenseCount")
+    d3.selectAll(".bar")
         .transition()
         .duration(1000)
         .attr("height", function (d) {
@@ -741,7 +741,7 @@ function CreateMonthlyDataBars() {
                 return "translate(" + (margin.left + (16 + xScale(d.month)-xScale.bandwidth()/2)) + ", " + margin.top + ")";
             })
         .append("rect")
-        .classed("rect-offenseCount",true)
+        .classed("bar",true)
         .attr("x", xScale.bandwidth()/2)
         .attr("y", chart_dimensions.height)
 		.attr("width", xScale.bandwidth()/2 - 1)
@@ -750,7 +750,7 @@ function CreateMonthlyDataBars() {
 
 function ShowMonthlyDataBars() {
 
-    d3.selectAll(".rect-offenseCount")
+    d3.selectAll(".bar")
         .transition()
         .duration(1000)
         .attr("height", function (d) {
