@@ -13,12 +13,18 @@ const offensesByDay = {};
 const offensesByHour = {};
 const offensesByMonth = {};
 const offensesByDistrict = {};
-
+// const offensesByShooting = {};
 
 const x_district = d3.scaleBand();
 const y_offenseCount = d3.scaleLinear();
 const y_offenseCount_axis = d3.scaleLinear();
 const yAxis = d3.axisLeft();
+
+// const x_shooting = d3.scaleBand();
+// const y_offenseCountShooting = d3.scaleLinear();
+// const y_offenseCountShooting_axis = d3.scaleLinear();
+// const yAxis2 = d3.axisLeft();
+
 
 const x_days = d3.scaleBand();
 const y_offensesByDayCount = d3.scaleLinear();
@@ -55,7 +61,8 @@ function loadcsvdata( dataloaded ) {
             offense: d.OFFENSE_CODE_GROUP,
 			desc: d.OFFENSE_DESCRIPTION,
 			street: d.STREET,
-			district: d.DISTRICT
+			district: d.DISTRICT,
+			shooting: d.SHOOTING
         };
 		
 		if (!offensesByDistrict[dataobj.district])
@@ -63,6 +70,12 @@ function loadcsvdata( dataloaded ) {
 
 		offensesByDistrict[dataobj.district].offenseCount++;
 		
+
+		// if (!offensesByShooting[dataobj.shooting])
+		// 	offensesByShooting[dataobj.shooting] = { district: dataobj.shooting, offenseCount: 0};
+		
+		// offensesByShooting[dataobj.shooting].offenseCount++;
+
 		if (!offensesByDay[dataobj.day])
 				offensesByDay[dataobj.day] = { day: dataobj.day, index: dataobj.day_index, offenseCount: 0};
 
@@ -92,12 +105,7 @@ function dataloaded() {
 }
 
 function calculateScales1(){
-	d3.select("#b0").classed("active",false);
 	d3.select("#b1").classed("active",true);
-	d3.select("#b2").classed("active",false);
-	d3.select("#b3").classed("active",false);
-	d3.select("#b4").classed("active",false);
-	d3.select("#b5").classed("active",false);
 	d3.select(".selection").selectAll("*").remove();
 	const referenceData = d3.values(offensesByDistrict);
 	x_district.range([0, chart_dimensions.width])
@@ -109,12 +117,7 @@ function calculateScales1(){
 }
 
 function calculateScales2(){
-	d3.select("#b0").classed("active",false);
-	d3.select("#b1").classed("active",false);
 	d3.select("#b2").classed("active",true);
-	d3.select("#b3").classed("active",false);
-	d3.select("#b4").classed("active",false);
-	d3.select("#b5").classed("active",false);
 	d3.select(".selection").selectAll("*").remove();
 	const referenceData4 = d3.values(offensesByMonth);
 	x_months.range([0, chart_dimensions.width])
@@ -490,12 +493,8 @@ function showMonthsAxis() {
         .text("Months");
 }
 
+// Aggregated Plot
 function prepareAggData(){
-	d3.select("#b0").classed("active",false);
-	d3.select("#b1").classed("active",false);
-	d3.select("#b2").classed("active",false);
-	d3.select("#b3").classed("active",false);
-	d3.select("#b4").classed("active",false);
 	d3.select("#b5").classed("active",true);
 	initializeChartArea();
 
@@ -509,11 +508,11 @@ function chart(csv) {
 	d3.select("#chart-div").insert("div").classed("heading",true);
 	d3.select(".heading").insert("br");
 	d3.select(".heading").insert("br");
-	d3.select(".heading").insert("h4").text("Explore Yourself").style("text-anchor", "start");
+	d3.select(".heading").insert("h4").text("Frequency of Crimes").style("text-anchor", "start");
 	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-	d3.select(".parascenes").insert("p").text("Select type of a crime to see its frequency over the hours of a day."); 
+	d3.select(".parascenes").insert("p").text("You can select different crimes below:"); 
 	d3.select(".heading").insert("br");
-	d3.select(".parascenes").insert("p").text("You can select Sorted data checkbox to sort the data in descending order of frequency.");
+	d3.select(".parascenes").insert("p").text("You can also sort the data by checking the box below");
 	
 	d3.select(".parascenes").insert("div").classed("selection",true);
 	d3.select(".selection").insert("br");
@@ -522,7 +521,7 @@ function chart(csv) {
 	d3.select(".selection").insert("br");
 	d3.select(".selection").insert("br");
 	d3.select(".selection").insert("input").classed("sort",true).attr("type","checkbox");
-	d3.select(".selection").insert("label").text("Sorted data");
+	d3.select(".selection").insert("label").text("Let's sort the data now!");
 
 	var options = d3.select(".offense").selectAll("option")
 		.data(offenses)
@@ -530,24 +529,19 @@ function chart(csv) {
 		.text(d => d);
 
 	var svg = d3.select(".chart"),
-		margin = {top: 150, bottom: 70, right: 150, left: 70},
+		margin = {top: 160, bottom: 80, right: 160, left: 80},
 		width =  canvas.width - (margin.right + margin.left),
 		height = canvas.height - (margin.top + margin.bottom);
-		//width = +svg.attr("width") - margin.left - margin.right,
-		//height = +svg.attr("height") - margin.top - margin.bottom;
 
 	var x = d3.scaleBand()
 		.range([0, chart_dimensions.width])
-		//.range([margin.left, width - margin.right])
 		.padding(0.1);
 
 	var y = d3.scaleLinear()
 		.rangeRound([chart_dimensions.height, 0]);
-		//.rangeRound([height - margin.bottom, margin.top]);
 
 	var xAxis = svg.append("g")
 		.attr("transform", "translate(" + (margin.left) + "," + (margin.top + chart_dimensions.height) + ")")
-		//.attr("transform", `translate(0,${height - margin.bottom})`)
 		.attr("class", "x-axis");
 		
 	d3.select(".chart").append("text")
@@ -559,7 +553,6 @@ function chart(csv) {
 
 	var yAxis = svg.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-		//.attr("transform", `translate(${margin.left},0)`)
 		.attr("class", "y-axis");
 		
 	d3.select(".chart").append("text")
@@ -587,7 +580,6 @@ function chart(csv) {
 		y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]);
 
 		svg.selectAll(".y-axis").transition().duration(1000)
-			//.call(d3.axisLeft(y).ticks(null, "s"))
 			.call(d3.axisLeft(y).tickSize(10).ticks(20))
 			.selectAll("text")
 			.attr("x", -40)
@@ -614,7 +606,6 @@ function chart(csv) {
 		var group = svg.selectAll("g.layer")
 			.data(d3.stack().keys(keys)(data), d => d.key)
 			
-		//console.log(group);
 
 		group.exit().remove()
 
@@ -630,7 +621,6 @@ function chart(csv) {
 		bars.enter()
 			.append("rect")
 			.classed("rect-offenseCount",true)
-			//.transition().duration(speed)
 			.attr("transform", "translate(" + (6+margin.left) + "," + (margin.top) + ")")
 			.attr("width", x.bandwidth()/2 - 1)
 			.merge(bars)
@@ -652,14 +642,11 @@ function chart(csv) {
 }
 }
 
+// Functions to load when click button
 function loadScene0() {
 	initializeChartArea();
 	d3.select("#b0").classed("active",true);
-	d3.select("#b1").classed("active",false);
-	d3.select("#b2").classed("active",false);
-	d3.select("#b3").classed("active",false);
-	d3.select("#b4").classed("active",false);
-	d3.select("#b5").classed("active",false);
+
 	//d3.selectAll("#selection").style("visibility","hidden");
 	d3.select("#chart-div").insert("div").classed("heading",true);
 	d3.select(".heading").insert("h2").text("Summary").style("text-anchor", "start");
