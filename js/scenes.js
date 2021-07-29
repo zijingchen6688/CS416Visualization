@@ -28,19 +28,14 @@ const y_offensesByHourCount = d3.scaleLinear();
 const y_offensesByHourCount_axis = d3.scaleLinear();
 const yAxis3 = d3.axisLeft();
 
-var xScale = d3.scaleBand();
-var yScale = d3.scaleLinear();
+const x_months = d3.scaleBand();
+const y_offensesByMonthCount = d3.scaleLinear();
 const y_offensesByMonthCount_axis = d3.scaleLinear();
 const yAxis4 = d3.axisLeft();
 
-var x_axis;
-var y_axis;
-//var xScale;
-//var yScale;
-
 function initializeVisualization() {
-	loadChart1();
-	d3.select("#b1").classed("active",true);
+	loadScene0();
+	d3.select("#b0").classed("active",true);
     loadcsvdata( dataloaded );
 }
 
@@ -94,6 +89,7 @@ function dataloaded() {
 }
 
 function calculateScales1(){
+	d3.select("#b0").classed("active",false);
 	d3.select("#b1").classed("active",true);
 	d3.select("#b2").classed("active",false);
 	d3.select("#b3").classed("active",false);
@@ -111,7 +107,8 @@ function calculateScales1(){
         .range([chart_dimensions.height, 0]);
 }
 
-function calculateScalesByMonth(){
+function calculateScales2(){
+	d3.select("#b0").classed("active",false);
 	d3.select("#b1").classed("active",false);
 	d3.select("#b2").classed("active",true);
 	d3.select("#b3").classed("active",false);
@@ -119,17 +116,18 @@ function calculateScalesByMonth(){
 	d3.select("#b5").classed("active",false);
 	d3.select(".selection").selectAll("*").remove();
 	//d3.selectAll("#selection").style("visibility","hidden");
-	var referenceData = d3.values(offensesByMonth);
+	const referenceData4 = d3.values(offensesByMonth);
 	//console.log(referenceData4);
-	xScale.range([0, chart_dimensions.width])
+	x_months.range([0, chart_dimensions.width])
         .domain(d3.keys(offensesByMonth));
-    yScale.domain([0, d3.max(referenceData, function(d) { return d.offenseCount; })])
+    y_offensesByMonthCount.domain([0, d3.max(referenceData4, function(d) { return d.offenseCount; })])
+        .range([0, chart_dimensions.height]);
+	y_offensesByMonthCount_axis.domain([0, d3.max(referenceData4, function(d) { return d.offenseCount; })])
         .range([chart_dimensions.height, 0]);
-	//y_offensesByMonthCount_axis.domain([0, d3.max(referenceData, function(d) { return d.offenseCount; })])
-        //.range([chart_dimensions.height, 0]);
 }
 
 function calculateScales3(){
+	d3.select("#b0").classed("active",false);
 	d3.select("#b1").classed("active",false);
 	d3.select("#b2").classed("active",false);
 	d3.select("#b3").classed("active",true);
@@ -141,13 +139,14 @@ function calculateScales3(){
 	//console.log(referenceData2);
 	x_days.range([0, chart_dimensions.width])
         .domain(d3.keys(offensesByDay));
-    y_offensesByDayCount.domain([0, d3.max(referenceData2, function(d) { return d.value; })])
+    y_offensesByDayCount.domain([0, d3.max(referenceData2, function(d) { return d.offenseCount; })])
         .range([0, chart_dimensions.height]);
-	y_offensesByDayCount_axis.domain([0, d3.max(referenceData2, function(d) { return d.value; })])
+	y_offensesByDayCount_axis.domain([0, d3.max(referenceData2, function(d) { return d.offenseCount; })])
         .range([chart_dimensions.height, 0]);
 }
 
 function calculateScales4(){
+	d3.select("#b0").classed("active",false);
 	d3.select("#b1").classed("active",false);
 	d3.select("#b2").classed("active",false);
 	d3.select("#b3").classed("active",false);
@@ -427,7 +426,7 @@ var div = d3.select("body").append("div");
                 return "translate(" + (margin.left + (25 + x_days(d.day)-x_days.bandwidth()/2)) + ", " + margin.top + ")";
             })
         .append("rect")
-        .classed("bar",true)
+        .classed("rect-offenseCount",true)
         .attr("x", x_days.bandwidth()/2)
         .attr("y", chart_dimensions.height)
 		.attr("width", x_days.bandwidth()/2 - 1)
@@ -436,7 +435,7 @@ var div = d3.select("body").append("div");
 
 function showOffensesByDayCountBars() {
 
-    d3.selectAll(".bar")
+    d3.selectAll(".rect-offenseCount")
         .transition()
         .duration(1000)
         .attr("height", function (d) {
@@ -713,8 +712,8 @@ function showHoursAxis() {
         .text("Hours");
 }
 
-function showMonthlyChartInfo(){
-	var div = d3.select("body").append("div");
+function createOffensesByMonthCountBars() {
+var div = d3.select("body").append("div");
 
 	d3.select("#chart-div").insert("div").classed("heading",true);
 	d3.select(".heading").insert("br");
@@ -726,9 +725,6 @@ function showMonthlyChartInfo(){
 	d3.select(".parascenes").insert("p").text("The winter months of February-April having the lowest crime rates, and the summer/early fall months of June-October having the highest crime rates. There is also a spike in crime rates in the month of January.");
 	d3.select(".parascenes").insert("br");
 	d3.select(".parascenes").insert("p").text("Click on next slide for frequency of crimes happening over days of a week.");
-}
-
-function CreateMonthlyDataBars() {
 	
     d3.select(".chart")
 		.selectAll(".bar-offenseCount")
@@ -738,26 +734,26 @@ function CreateMonthlyDataBars() {
         .classed("bar-offenseCount",true)
         .attr("transform",
             function (d) {
-                return "translate(" + (margin.left + (16 + xScale(d.month)-xScale.bandwidth()/2)) + ", " + margin.top + ")";
+                return "translate(" + (margin.left + (16 + x_months(d.month)-x_months.bandwidth()/2)) + ", " + margin.top + ")";
             })
         .append("rect")
-        .classed("bar",true)
-        .attr("x", xScale.bandwidth()/2)
+        .classed("rect-offenseCount",true)
+        .attr("x", x_months.bandwidth()/2)
         .attr("y", chart_dimensions.height)
-		.attr("width", xScale.bandwidth()/2 - 1)
+		.attr("width", x_months.bandwidth()/2 - 1)
         .attr("height",0);
 }
 
-function ShowMonthlyDataBars() {
+function showOffensesByMonthCountBars() {
 
-    d3.selectAll(".bar")
+    d3.selectAll(".rect-offenseCount")
         .transition()
         .duration(1000)
         .attr("height", function (d) {
-            return yScale(d.offenseCount);
+            return y_offensesByMonthCount(d.offenseCount);
         })
         .attr("y", function (d) {
-            return (chart_dimensions.height - yScale(d.offenseCount));
+            return (chart_dimensions.height - y_offensesByMonthCount(d.offenseCount));
         });
 		
 	d3.select(".chart")
@@ -811,15 +807,15 @@ function ShowMonthlyDataBars() {
 		.attr("fill","black");
 }
 
-function CreateYAxisByMonth() {
-    //yAxis4.scale(yScale)
-        //.tickSize(10).ticks(20);
+function createOffensesByMonthCountAxis() {
+    yAxis4.scale(y_offensesByMonthCount_axis)
+        .tickSize(10).ticks(20);
 
     d3.select(".chart").append("g")
         .attr("id", "yAxis")
         .classed("y-axis",true)
         .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_dimensions.height + margin.bottom) + ")")
-        .call(d3.axisLeft(yScale));
+        .call(yAxis4);
 
     d3.select("svg").append("text")
         .attr("id", "yAxisLabel")
@@ -830,11 +826,12 @@ function CreateYAxisByMonth() {
         .text("Number of Records");
 }
 
-function ShowYAxisByMonth() {
+function showOffensesByMonthCountAxis() {
     d3.select("#yAxis")
         .transition()
         .duration(1000)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(yAxis4)
         .selectAll("text")
         .attr("x", -50)
         .attr("y", 0)
@@ -850,20 +847,22 @@ function ShowYAxisByMonth() {
             ", rotate(-90)");
 }
 
-function showMonthsXAxis() {
-    //const xAxis = d3.axisBottom().scale(xScale)
-        //.ticks(d3.keys(offensesByMonth));
+function showMonthsAxis() {
+    const xAxis = d3.axisBottom().scale(x_months)
+        .ticks(d3.keys(offensesByMonth));
 
     d3.select(".chart").append("g")
         .attr("id", "xAxis")
-        .classed("x-axis",true)
+        .classed("x axis",true)
         .attr("transform", "translate(" + (margin.left) + "," + (margin.top + chart_dimensions.height) + ")")
-        .call(d3.axisBottom(xScale))
+        .call(xAxis)
         .selectAll("text")
-        .attr("x", -20)
-        .attr("y", 15)
-        .attr("dx", 5)
-        .attr("dy", "0.45em");
+        .attr("x", -15)
+        .attr("y", 13)
+        .attr("dx", 0)
+        .attr("dy", "0.35em")
+        .attr("transform", "rotate(0)")
+        .style("text-anchor", "start");
 
     d3.select(".chart").append("text")
         .attr("transform",
@@ -1035,63 +1034,45 @@ function chart(csv) {
 }
 }
 
-function loadChart1() {
+function loadScene0() {
 	initializeChartArea();
-	d3.select("#b1").classed("active",true);
+	d3.select("#b0").classed("active",true);
+	d3.select("#b1").classed("active",false);
 	d3.select("#b2").classed("active",false);
 	d3.select("#b3").classed("active",false);
 	d3.select("#b4").classed("active",false);
 	d3.select("#b5").classed("active",false);
-	d3.select(".selection").selectAll("*").remove();
-
-	var svg = d3.select(".chart");
-
-	var xScale = d3.scaleBand().range([0, chart_dimensions.width]),
-		ySCale = d.scaleLinear().range([chart_dimensions.height, 0]);
-
-	var g = svg.append("g")
-				.attr("transform", "translate(" + 85 + "," + 85 + ")");
-	
-	const referenceData = d3.values(offenseGroups);
-	xScale.domain(d3.keys(offenseGroups));
-	ySCale.domain([0, d3.max(referenceData, function(d) { return d.value})]);
-
-	//y_offenseCount_axis.domain([0, d3.max(referenceData, function(d) { return d.offenseCount; })])
-		//.range([chart_dimensions.height, 0]);
-	g.append("g")
-		.attr("transform", "translate(0," + chart_dimensions.height + ")")
-		.call(d3.axisBottom(xScale));
-	
-	g.append("g")
-		.call(d3.axisLeft(yScale)
-		.tickFormat(function(d){
-			return "$" + d;
-		})
-		.ticks(10)
-		.append("text")
-		.attr("y", 6)
-		.attr("dy", "0.71em")
-		.attr("text-anchor", "end")
-		.text("value"));
-
-	    d3.select(".chart").append("text")
-        .attr("transform",
-            "translate(" + (margin.left + chart_dimensions.width / 2) + " ," +
-            (margin.top + chart_dimensions.height + 50) + ")")
-        .style("text-anchor", "middle")
-        .text("Months");
+	//d3.selectAll("#selection").style("visibility","hidden");
+	d3.select("#chart-div").insert("div").classed("heading",true);
+	d3.select(".heading").insert("h2").text("Introduction").style("text-anchor", "start");
+	d3.select("#chart-div").insert("div").classed("para",true);
+	d3.select(".para").insert("p").text("This website contains narrative visualization presenting data related to crimes happened in Boston. Crime incident reports are provided by Boston Police Department (BPD) to document the initial details surrounding an incident to which BPD officers respond.");
+	d3.select(".para").insert("p").text("This data presented in this website is from June 14, 2015 and continue to September 3, 2018.");
+	d3.select(".para").insert("p").text("The narrative visualization is divided into two parts. The first part presents different bar charts showing number of crimes based on types, crimes over the month, day and hour to understand whether the frequency of crimes change over the month, day or hour?");
+	d3.select(".para").insert("p").text("The second part allows a reader to explore the data by type of the crime over hours of a day.");
+	d3.select(".para").insert("p").text("Use page numbers shown in the top left to navigate to different scenes in this narrative visualization.");
 }
 
-function loadMonthlyData() {
+function loadScene1() {
 	initializeChartArea();
-	showMonthlyChartInfo();
-    calculateScalesByMonth();
+    calculateScales1();
 
-	showMonthsXAxis();
-	CreateYAxisByMonth();
-	ShowYAxisByMonth();
-    CreateMonthlyDataBars();
-	ShowMonthlyDataBars();
+    createOffenseCountBars();
+	showOffenseCountBars();
+	createOffenseCountAxis();
+	showOffenseCountAxis();
+	showOffenseAxis();
+}
+
+function loadScene2() {
+	initializeChartArea();
+    calculateScales2();
+
+    createOffensesByMonthCountBars();
+	showOffensesByMonthCountBars();
+	createOffensesByMonthCountAxis();
+	showOffensesByMonthCountAxis();
+	showMonthsAxis();
 }
 
 function loadScene3() {
