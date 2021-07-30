@@ -11,6 +11,12 @@ div {
     fill: lightsalmon;
 }
 
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+  }
+
 .chart text {
     font: 11px sans-serif;
     text-anchor: end;

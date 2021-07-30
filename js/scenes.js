@@ -43,7 +43,6 @@ const yAxis4 = d3.axisLeft();
 
 function initializeVisualization() {
 	loadScene0();
-	d3.select("#b0").classed("active",true);
     loadcsvdata( dataloaded );
 }
 
@@ -417,15 +416,6 @@ function showOffensesByMonthCountBars() {
 		.text("Especially in November")
 		.attr("fill","black");
 		
-	d3.select(".chart")
-		.append("text")
-		.classed("scene-2-text-3",true)
-		.attr("x",560)
-		.attr("y",130)
-		.attr("dy",".35em")
-		.style("font-size","11px")
-		.text("early fall")
-		.attr("fill","black");
 }
 
 function createOffensesByMonthCountAxis() {
@@ -494,153 +484,235 @@ function showMonthsAxis() {
 }
 
 // Aggregated Plot
+// function prepareAggData(){
+// 	d3.select("#b5").classed("active",true);
+// 	initializeChartArea();
+
+// d3.csv("../dataset/agg_crime.csv").then(d => chart(d))
+
+// function chart(csv) {
+// 	var keys = csv.columns.slice(1);
+
+// 	var offenses = [...new Set(csv.map(d => d.Offense_Code_Group))];
+	
+// 	d3.select("#chart-div").insert("div").classed("heading",true);
+// 	d3.select(".heading").insert("br");
+// 	d3.select(".heading").insert("br");
+// 	d3.select(".heading").insert("h4").text("Frequency of Crimes").style("text-anchor", "start");
+// 	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
+// 	d3.select(".parascenes").insert("p").text("You can select different crimes below:"); 
+// 	d3.select(".heading").insert("br");
+// 	d3.select(".parascenes").insert("p").text("You can also sort the data by checking the box below");
+	
+// 	d3.select(".parascenes").insert("div").classed("selection",true);
+// 	d3.select(".selection").insert("br");
+// 	d3.select(".selection").insert("h4").text("Select Offense:");
+// 	d3.select(".selection").insert("select").classed("offense",true);
+// 	d3.select(".selection").insert("br");
+// 	d3.select(".selection").insert("br");
+// 	d3.select(".selection").insert("input").classed("sort",true).attr("type","checkbox");
+// 	d3.select(".selection").insert("label").text("Let's sort the data now!");
+
+// 	var options = d3.select(".offense").selectAll("option")
+// 		.data(offenses)
+// 		.enter().append("option")
+// 		.text(d => d);
+
+// 	var svg = d3.select(".chart"),
+// 		margin = {top: 160, bottom: 80, right: 160, left: 80},
+// 		width =  canvas.width - (margin.right + margin.left),
+// 		height = canvas.height - (margin.top + margin.bottom);
+
+// 	var x = d3.scaleBand()
+// 		.range([0, chart_dimensions.width])
+// 		.padding(0.1);
+
+// 	var y = d3.scaleLinear()
+// 		.rangeRound([chart_dimensions.height, 0]);
+
+// 	var xAxis = svg.append("g")
+// 		.attr("transform", "translate(" + (margin.left) + "," + (margin.top + chart_dimensions.height) + ")")
+// 		.attr("class", "x-axis");
+		
+// 	d3.select(".chart").append("text")
+//         .attr("transform",
+//             "translate(" + (margin.left + chart_dimensions.width / 2) + " ," +
+//             (margin.top + chart_dimensions.height + 50) + ")")
+//         .style("text-anchor", "middle")
+//         .text("Hours");
+
+// 	var yAxis = svg.append("g")
+// 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+// 		.attr("class", "y-axis");
+		
+// 	d3.select(".chart").append("text")
+//         .attr("transform",
+//             "translate(8," + (margin.top + chart_dimensions.height + margin.bottom + chart_dimensions.height / 2) + ")" +
+//             ", rotate(-90)")
+//         .style("text-anchor", "middle")
+//         .text("Number of Records");
+
+// 	var z = d3.scaleOrdinal()
+// 		.range(["lightsalmon"])
+// 		.domain(keys);
+
+// 	update(d3.select(".offense").property("value"), 0)
+
+// 	function update(input, speed) {
+
+// 		var data = csv.filter(f => f.Offense_Code_Group == input)
+
+// 		data.forEach(function(d) {
+// 			d.total = d3.sum(keys, k => +d[k])
+// 			return d
+// 		});
+		
+// 		y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]);
+
+// 		svg.selectAll(".y-axis").transition().duration(1000)
+// 			.call(d3.axisLeft(y).tickSize(10).ticks(20))
+// 			.selectAll("text")
+// 			.attr("x", -50)
+// 			.attr("y", 0)
+// 			.attr("dx", 0)
+// 			.attr("dy", "0.35em")
+// 			.style("text-anchor", "start");
+			
+// 		data.sort(d3.select(".sort").property("checked")
+// 			? (a, b) => b.total - a.total
+// 			: (a, b) => offenses.indexOf(a.Offense_Code_Group) - offenses.indexOf(b.Offense_Code_Group));
+		
+// 		x.domain(data.map(d => d.Hour));
+
+// 		svg.selectAll(".x-axis").transition().duration(1000)
+// 			.call(d3.axisBottom(x).tickSizeOuter(0))
+// 			.selectAll("text")
+// 			.attr("x", -2)
+// 			.attr("y", 15)
+// 			.attr("dx", 0)
+// 			.attr("dy", "0.35em")
+// 			.style("text-anchor", "start");
+
+// 		var group = svg.selectAll("g.layer")
+// 			.data(d3.stack().keys(keys)(data), d => d.key)
+			
+
+// 		group.exit().remove()
+
+// 		group.enter().append("g")
+// 			.classed("layer", true)
+// 			.attr("fill", d => z(d.key));
+
+// 		var bars = svg.selectAll("g.layer").selectAll("rect")
+// 			.data(d => d, e => e.data.Hour);
+
+// 		bars.exit().remove();
+		
+// 		bars.enter()
+// 			.append("rect")
+// 			.classed("rect-offenseCount",true)
+// 			.attr("transform", "translate(" + (6+margin.left) + "," + (margin.top) + ")")
+// 			.attr("width", x.bandwidth()/2 - 1)
+// 			.merge(bars)
+// 			.transition().duration(speed)		
+// 			.attr("x", d => x(d.data.Hour))
+// 			.attr("y", d => y(d[1]))
+// 			.attr("height", d => y(d[0]) - y(d[1]));
+// 	}
+
+// 	var select = d3.select(".offense")
+// 		.on("change", function() {
+// 			update(this.value, 1000)
+// 		});
+	
+// 	var checkbox = d3.select(".sort")
+// 		.on("click", function() {
+// 			update(select.property("value"), 1000)
+// 		});
+// }
+// }
+
+// Aggregated Plot
 function prepareAggData(){
 	d3.select("#b5").classed("active",true);
 	initializeChartArea();
+    d3.select("#chart-div").insert("div").classed("heading",true);
+    	d3.select(".heading").insert("br");
+    	d3.select(".heading").insert("br");
+    	d3.select(".heading").insert("h4").text("Frequency of Crimes").style("text-anchor", "start");
+    	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
+    	d3.select(".parascenes").insert("p").text("You can select different crimes below:"); 
+    	d3.select(".heading").insert("br");
+    	// d3.select(".parascenes").insert("p").text("You can also sort the data by checking the box below");
+        
+    	d3.select(".parascenes").insert("div").classed("selection",true);
+    	d3.select(".selection").insert("br");
+    	// d3.select(".selection").insert("h4").text("Select Offense:");
+    	// d3.select(".selection").insert("select").classed("offense",true);
+    	// d3.select(".selection").insert("br");
+    	// d3.select(".selection").insert("br");
+    	// d3.select(".selection").insert("input").classed("sort",true).attr("type","checkbox");
+    	// d3.select(".selection").insert("label").text("Let's sort the data now!");
 
-d3.csv("../dataset/agg_crime.csv").then(d => chart(d))
+        // set the dimensions and margins of the graph
+    var margin = {top: 20, right: 20, bottom: 50, left: 70},
+    width = 950 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
 
-function chart(csv) {
-	var keys = csv.columns.slice(1);
+    // parse the date / time
+    var parseTime = d3.timeParse("%d-%b-%y");
 
-	var offenses = [...new Set(csv.map(d => d.Offense_Code_Group))];
-	
-	d3.select("#chart-div").insert("div").classed("heading",true);
-	d3.select(".heading").insert("br");
-	d3.select(".heading").insert("br");
-	d3.select(".heading").insert("h4").text("Frequency of Crimes").style("text-anchor", "start");
-	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-	d3.select(".parascenes").insert("p").text("You can select different crimes below:"); 
-	d3.select(".heading").insert("br");
-	d3.select(".parascenes").insert("p").text("You can also sort the data by checking the box below");
-	
-	d3.select(".parascenes").insert("div").classed("selection",true);
-	d3.select(".selection").insert("br");
-	d3.select(".selection").insert("h4").text("Select Offense:");
-	d3.select(".selection").insert("select").classed("offense",true);
-	d3.select(".selection").insert("br");
-	d3.select(".selection").insert("br");
-	d3.select(".selection").insert("input").classed("sort",true).attr("type","checkbox");
-	d3.select(".selection").insert("label").text("Let's sort the data now!");
+    // set the ranges
+    var x = d3.scaleTime().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
 
-	var options = d3.select(".offense").selectAll("option")
-		.data(offenses)
-		.enter().append("option")
-		.text(d => d);
+    // define the line
+    var valueline = d3.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.close); });
 
-	var svg = d3.select(".chart"),
-		margin = {top: 160, bottom: 80, right: 160, left: 80},
-		width =  canvas.width - (margin.right + margin.left),
-		height = canvas.height - (margin.top + margin.bottom);
+    // append the svg obgect to the body of the page
+    // appends a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select(".chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
 
-	var x = d3.scaleBand()
-		.range([0, chart_dimensions.width])
-		.padding(0.1);
+    // Get the data
+    d3.csv("../dataset/data.csv").then(function(data) {
 
-	var y = d3.scaleLinear()
-		.rangeRound([chart_dimensions.height, 0]);
+    // format the data
+    data.forEach(function(d) {
+    d.date = parseTime(d.date);
+    d.close = +d.close;
+    });
 
-	var xAxis = svg.append("g")
-		.attr("transform", "translate(" + (margin.left) + "," + (margin.top + chart_dimensions.height) + ")")
-		.attr("class", "x-axis");
-		
-	d3.select(".chart").append("text")
-        .attr("transform",
-            "translate(" + (margin.left + chart_dimensions.width / 2) + " ," +
-            (margin.top + chart_dimensions.height + 50) + ")")
-        .style("text-anchor", "middle")
-        .text("Hours");
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d.close; })]);
 
-	var yAxis = svg.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-		.attr("class", "y-axis");
-		
-	d3.select(".chart").append("text")
-        .attr("transform",
-            "translate(8," + (margin.top + chart_dimensions.height + margin.bottom + chart_dimensions.height / 2) + ")" +
-            ", rotate(-90)")
-        .style("text-anchor", "middle")
-        .text("Number of Records");
+    // Add the valueline path.
+    svg.append("path")
+    .data([data])
+    .attr("class", "line")
+    .attr("d", valueline);
 
-	var z = d3.scaleOrdinal()
-		.range(["steelblue"])
-		.domain(keys);
+    // Add the x Axis
+    svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
 
-	update(d3.select(".offense").property("value"), 0)
+    // Add the y Axis
+    svg.append("g")
+    .call(d3.axisLeft(y));
 
-	function update(input, speed) {
-
-		var data = csv.filter(f => f.Offense_Code_Group == input)
-
-		data.forEach(function(d) {
-			d.total = d3.sum(keys, k => +d[k])
-			return d
-		});
-		
-		y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]);
-
-		svg.selectAll(".y-axis").transition().duration(1000)
-			.call(d3.axisLeft(y).tickSize(10).ticks(20))
-			.selectAll("text")
-			.attr("x", -40)
-			.attr("y", 0)
-			.attr("dx", 0)
-			.attr("dy", "0.35em")
-			.style("text-anchor", "start");
-			
-		data.sort(d3.select(".sort").property("checked")
-			? (a, b) => b.total - a.total
-			: (a, b) => offenses.indexOf(a.Offense_Code_Group) - offenses.indexOf(b.Offense_Code_Group));
-		
-		x.domain(data.map(d => d.Hour));
-
-		svg.selectAll(".x-axis").transition().duration(1000)
-			.call(d3.axisBottom(x).tickSizeOuter(0))
-			.selectAll("text")
-			.attr("x", -3)
-			.attr("y", 13)
-			.attr("dx", 0)
-			.attr("dy", "0.35em")
-			.style("text-anchor", "start");
-
-		var group = svg.selectAll("g.layer")
-			.data(d3.stack().keys(keys)(data), d => d.key)
-			
-
-		group.exit().remove()
-
-		group.enter().append("g")
-			.classed("layer", true)
-			.attr("fill", d => z(d.key));
-
-		var bars = svg.selectAll("g.layer").selectAll("rect")
-			.data(d => d, e => e.data.Hour);
-
-		bars.exit().remove();
-		
-		bars.enter()
-			.append("rect")
-			.classed("rect-offenseCount",true)
-			.attr("transform", "translate(" + (6+margin.left) + "," + (margin.top) + ")")
-			.attr("width", x.bandwidth()/2 - 1)
-			.merge(bars)
-			.transition().duration(speed)		
-			.attr("x", d => x(d.data.Hour))
-			.attr("y", d => y(d[1]))
-			.attr("height", d => y(d[0]) - y(d[1]));
-	}
-
-	var select = d3.select(".offense")
-		.on("change", function() {
-			update(this.value, 1000)
-		});
-	
-	var checkbox = d3.select(".sort")
-		.on("click", function() {
-			update(select.property("value"), 1000)
-		});
+    });
 }
-}
+
+
 
 // Functions to load when click button
 function loadScene0() {
@@ -649,7 +721,7 @@ function loadScene0() {
 
 	//d3.selectAll("#selection").style("visibility","hidden");
 	d3.select("#chart-div").insert("div").classed("heading",true);
-	d3.select(".heading").insert("h2").text("Summary").style("text-anchor", "start");
+	d3.select(".heading").insert("h2").text("Summaries").style("text-anchor", "start");
 	d3.select("#chart-div").insert("div").classed("para",true);
 	d3.select(".para").insert("p").text("The time range of this crime data is from Records begin in June 14, 2015 and continue to September 3, 2018.");
 	d3.select(".para").insert("p").text("Crime incident reports are provided by Boston Police Department (BPD) to document the initial details surrounding an incident to which BPD officers respond. This is a dataset containing records from the new crime incident report system, which includes a reduced set of fields focused on capturing the type of incident as well as when and where it occurred.");
