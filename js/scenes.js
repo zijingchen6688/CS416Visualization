@@ -539,7 +539,7 @@ function loadScene0() {
 	d3.select(".heading").insert("h2").text("Summaries").style("text-anchor", "start");
 	d3.select("#chart-div").insert("div").classed("para",true);
 	d3.select(".para").insert("p").text("The time range of this crime data is from Records begin in June 14, 2015 and continue to September 3, 2018.");
-	d3.select(".para").insert("p").text("Crime incident reports are provided by Boston Police Department (BPD) to document the initial details surrounding an incident to which BPD officers respond. This is a dataset containing records from the new crime incident report system, which includes a reduced set of fields focused on capturing the type of incident as well as when and where it occurred.");
+	d3.select(".para").insert("p").text("This is a dataset containing records from the new crime incident report system, which includes a reduced set of fields focused on capturing the type of incident as well as when and where it occurred.");
 	d3.select(".para").insert("p").text("In this crime analysis, you will learn the following:");
 	d3.select(".para").insert("p").text("1. Where does most of the crimes most likely to occur?");
 	d3.select(".para").insert("p").text("2. When does crimes usually happen?");
