@@ -77,7 +77,7 @@ function dataloaded() {
         .classed("invisible",false);
 }
 
-function calculateScales1(){
+function cal1(){
 	d3.select("#b1").classed("active",true);
 	d3.select(".selection").selectAll("*").remove();
 	const referenceData = d3.values(crimeNumberByDistrict);
@@ -89,7 +89,7 @@ function calculateScales1(){
         .range([chart_dimensions.height, 0]);
 }
 
-function calculateScales2(){
+function cal2(){
 	d3.select("#b2").classed("active",true);
 	d3.select(".selection").selectAll("*").remove();
 	const referenceData4 = d3.values(crimeNumberByMonth);
@@ -102,7 +102,7 @@ function calculateScales2(){
 }
 
 
-function initializeChartArea() {
+function chartarea() {
 	d3.select(".heading").selectAll("*").remove();	
 	d3.select(".para").selectAll("*").remove();
 	d3.select(".parascenes").selectAll("*").remove();
@@ -114,7 +114,7 @@ function initializeChartArea() {
 }
 
 // District functions
-function createDistrictCountBars() {
+function createDistrictBars() {
 var div = d3.select("body").append("div");
 
 	d3.select("#chart-div").insert("div").classed("heading",true);
@@ -146,7 +146,7 @@ var div = d3.select("body").append("div");
         .attr("height",0);
 }
 
-function showDistrictCountBars() {
+function displayDistrictBars() {
 
     d3.selectAll(".rect-offenseCount")
         .transition()
@@ -210,7 +210,7 @@ function showDistrictCountBars() {
 		.attr("fill","black");
 }
 
-function createDistrictCountAxis() {
+function DistrictCountAxis() {
     yAxis.scale(y_offenseCount_axis)
         .tickSize(10).ticks(20);
 
@@ -229,7 +229,7 @@ function createDistrictCountAxis() {
         .text("Number of Records");
 }
 
-function showDistrictCountAxis() {
+function displayDistrictCountAxis() {
     d3.select("#yAxis")
         .transition()
         .duration(1000)
@@ -250,7 +250,7 @@ function showDistrictCountAxis() {
             ", rotate(-90)");
 }
 
-function showOffenseAxis() {
+function displayOffenseAxis() {
     const xAxis = d3.axisBottom().scale(x_district)
         .ticks(d3.keys(crimeNumberByDistrict));
 
@@ -302,7 +302,7 @@ function wrap(text, width) {
 
 
 // 2. Month
-function createOffensesByMonthCountBars() {
+function OffensesByMonthBars() {
 var div = d3.select("body").append("div");
 
 	d3.select("#chart-div").insert("div").classed("heading",true);
@@ -338,7 +338,7 @@ var div = d3.select("body").append("div");
         .attr("height",0);
 }
 
-function showOffensesByMonthCountBars() {
+function displayOffensesByMonthBars() {
 
     d3.selectAll(".rect-offenseCount")
         .transition()
@@ -392,7 +392,7 @@ function showOffensesByMonthCountBars() {
 		
 }
 
-function createOffensesByMonthCountAxis() {
+function buildOffensesByMonthAxis() {
     yAxis4.scale(y_offensesByMonthCount_axis)
         .tickSize(10).ticks(20);
 
@@ -411,7 +411,7 @@ function createOffensesByMonthCountAxis() {
         .text("Number of Records");
 }
 
-function showOffensesByMonthCountAxis() {
+function displayOffensesByMonthAxis() {
     d3.select("#yAxis")
         .transition()
         .duration(1000)
@@ -432,7 +432,7 @@ function showOffensesByMonthCountAxis() {
             ", rotate(-90)");
 }
 
-function showMonthsAxis() {
+function displayMonthsAxis() {
     const xAxis = d3.axisBottom().scale(x_months)
         .ticks(d3.keys(crimeNumberByMonth));
 
@@ -461,17 +461,17 @@ function showMonthsAxis() {
 // Line Plot
 function linechart(){
 	d3.select("#b5").classed("active",true);
-	initializeChartArea();
+	chartarea();
     d3.select("#chart-div").insert("div").classed("heading",true);
     	d3.select(".heading").insert("br");
     	d3.select(".heading").insert("br");
     	d3.select(".heading").insert("h4").text("When the crimes happen?").style("text-anchor", "start");
     	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-    	d3.select(".parascenes").insert("p").text("From the line plot, we can see that the number of crime reaches its peak in 2017"); 
-        d3.select(".parascenes").insert("p").text("Then follows a steady decrease to 2018."); 
-        d3.select(".parascenes").insert("p").text("And the number drops dramatically from 2018 April to 2019 October."); 
+    	d3.select(".parascenes").insert("p").text("From the line plot, we can see that the number of crime reaches its peak in April 30,2017"); 
+        d3.select(".parascenes").insert("p").text("Then follows a steady decrease to May."); 
+
         // set the dimensions and margins of the graph
-    var margin = {top: 100, right: 20, bottom: 50, left: 70},
+    var margin = {top: 100, right: 20, bottom: 50, left: 45},
     width = 950 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
@@ -531,7 +531,7 @@ function linechart(){
 
 // Functions to load when click button
 function loadScene0() {
-	initializeChartArea();
+	chartarea();
 	d3.select("#b0").classed("active",true);
 
 	//d3.selectAll("#selection").style("visibility","hidden");
@@ -547,29 +547,29 @@ function loadScene0() {
 }
 
 function loadScene1() {
-	initializeChartArea();
-    calculateScales1();
+	chartarea();
+    cal1();
 
-    createDistrictCountBars();
-	showDistrictCountBars();
-	createDistrictCountAxis();
-	showDistrictCountAxis();
-	showOffenseAxis();
+    createDistrictBars();
+	displayDistrictBars();
+	DistrictCountAxis();
+	displayDistrictCountAxis();
+	displayOffenseAxis();
 }
 
 function loadScene2() {
-	initializeChartArea();
-    calculateScales2();
+	chartarea();
+    cal2();
 
-    createOffensesByMonthCountBars();
-	showOffensesByMonthCountBars();
-	createOffensesByMonthCountAxis();
-	showOffensesByMonthCountAxis();
-	showMonthsAxis();
+    OffensesByMonthBars();
+	displayOffensesByMonthBars();
+	buildOffensesByMonthAxis();
+	displayOffensesByMonthAxis();
+	displayMonthsAxis();
 }
 
 
 function loadScene5() {
-	initializeChartArea();
+	chartarea();
 	linechart();
 }	
