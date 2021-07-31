@@ -11,7 +11,7 @@ div {
     fill: lightsalmon;
 }
 
-.line {
+.chartLine {
     fill: none;
     stroke: lightsalmon;
     stroke-width: 2px;

@@ -13,17 +13,13 @@ const offensesByDay = {};
 const offensesByHour = {};
 const offensesByMonth = {};
 const offensesByDistrict = {};
-// const offensesByShooting = {};
+
 
 const x_district = d3.scaleBand();
 const y_offenseCount = d3.scaleLinear();
 const y_offenseCount_axis = d3.scaleLinear();
 const yAxis = d3.axisLeft();
 
-// const x_shooting = d3.scaleBand();
-// const y_offenseCountShooting = d3.scaleLinear();
-// const y_offenseCountShooting_axis = d3.scaleLinear();
-// const yAxis2 = d3.axisLeft();
 
 
 const x_days = d3.scaleBand();
@@ -483,170 +479,19 @@ function showMonthsAxis() {
         .text("Months");
 }
 
-// Aggregated Plot
-// function prepareAggData(){
-// 	d3.select("#b5").classed("active",true);
-// 	initializeChartArea();
 
-// d3.csv("../dataset/agg_crime.csv").then(d => chart(d))
-
-// function chart(csv) {
-// 	var keys = csv.columns.slice(1);
-
-// 	var offenses = [...new Set(csv.map(d => d.Offense_Code_Group))];
-	
-// 	d3.select("#chart-div").insert("div").classed("heading",true);
-// 	d3.select(".heading").insert("br");
-// 	d3.select(".heading").insert("br");
-// 	d3.select(".heading").insert("h4").text("Frequency of Crimes").style("text-anchor", "start");
-// 	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-// 	d3.select(".parascenes").insert("p").text("You can select different crimes below:"); 
-// 	d3.select(".heading").insert("br");
-// 	d3.select(".parascenes").insert("p").text("You can also sort the data by checking the box below");
-	
-// 	d3.select(".parascenes").insert("div").classed("selection",true);
-// 	d3.select(".selection").insert("br");
-// 	d3.select(".selection").insert("h4").text("Select Offense:");
-// 	d3.select(".selection").insert("select").classed("offense",true);
-// 	d3.select(".selection").insert("br");
-// 	d3.select(".selection").insert("br");
-// 	d3.select(".selection").insert("input").classed("sort",true).attr("type","checkbox");
-// 	d3.select(".selection").insert("label").text("Let's sort the data now!");
-
-// 	var options = d3.select(".offense").selectAll("option")
-// 		.data(offenses)
-// 		.enter().append("option")
-// 		.text(d => d);
-
-// 	var svg = d3.select(".chart"),
-// 		margin = {top: 160, bottom: 80, right: 160, left: 80},
-// 		width =  canvas.width - (margin.right + margin.left),
-// 		height = canvas.height - (margin.top + margin.bottom);
-
-// 	var x = d3.scaleBand()
-// 		.range([0, chart_dimensions.width])
-// 		.padding(0.1);
-
-// 	var y = d3.scaleLinear()
-// 		.rangeRound([chart_dimensions.height, 0]);
-
-// 	var xAxis = svg.append("g")
-// 		.attr("transform", "translate(" + (margin.left) + "," + (margin.top + chart_dimensions.height) + ")")
-// 		.attr("class", "x-axis");
-		
-// 	d3.select(".chart").append("text")
-//         .attr("transform",
-//             "translate(" + (margin.left + chart_dimensions.width / 2) + " ," +
-//             (margin.top + chart_dimensions.height + 50) + ")")
-//         .style("text-anchor", "middle")
-//         .text("Hours");
-
-// 	var yAxis = svg.append("g")
-// 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-// 		.attr("class", "y-axis");
-		
-// 	d3.select(".chart").append("text")
-//         .attr("transform",
-//             "translate(8," + (margin.top + chart_dimensions.height + margin.bottom + chart_dimensions.height / 2) + ")" +
-//             ", rotate(-90)")
-//         .style("text-anchor", "middle")
-//         .text("Number of Records");
-
-// 	var z = d3.scaleOrdinal()
-// 		.range(["lightsalmon"])
-// 		.domain(keys);
-
-// 	update(d3.select(".offense").property("value"), 0)
-
-// 	function update(input, speed) {
-
-// 		var data = csv.filter(f => f.Offense_Code_Group == input)
-
-// 		data.forEach(function(d) {
-// 			d.total = d3.sum(keys, k => +d[k])
-// 			return d
-// 		});
-		
-// 		y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]);
-
-// 		svg.selectAll(".y-axis").transition().duration(1000)
-// 			.call(d3.axisLeft(y).tickSize(10).ticks(20))
-// 			.selectAll("text")
-// 			.attr("x", -50)
-// 			.attr("y", 0)
-// 			.attr("dx", 0)
-// 			.attr("dy", "0.35em")
-// 			.style("text-anchor", "start");
-			
-// 		data.sort(d3.select(".sort").property("checked")
-// 			? (a, b) => b.total - a.total
-// 			: (a, b) => offenses.indexOf(a.Offense_Code_Group) - offenses.indexOf(b.Offense_Code_Group));
-		
-// 		x.domain(data.map(d => d.Hour));
-
-// 		svg.selectAll(".x-axis").transition().duration(1000)
-// 			.call(d3.axisBottom(x).tickSizeOuter(0))
-// 			.selectAll("text")
-// 			.attr("x", -2)
-// 			.attr("y", 15)
-// 			.attr("dx", 0)
-// 			.attr("dy", "0.35em")
-// 			.style("text-anchor", "start");
-
-// 		var group = svg.selectAll("g.layer")
-// 			.data(d3.stack().keys(keys)(data), d => d.key)
-			
-
-// 		group.exit().remove()
-
-// 		group.enter().append("g")
-// 			.classed("layer", true)
-// 			.attr("fill", d => z(d.key));
-
-// 		var bars = svg.selectAll("g.layer").selectAll("rect")
-// 			.data(d => d, e => e.data.Hour);
-
-// 		bars.exit().remove();
-		
-// 		bars.enter()
-// 			.append("rect")
-// 			.classed("rect-offenseCount",true)
-// 			.attr("transform", "translate(" + (6+margin.left) + "," + (margin.top) + ")")
-// 			.attr("width", x.bandwidth()/2 - 1)
-// 			.merge(bars)
-// 			.transition().duration(speed)		
-// 			.attr("x", d => x(d.data.Hour))
-// 			.attr("y", d => y(d[1]))
-// 			.attr("height", d => y(d[0]) - y(d[1]));
-// 	}
-
-// 	var select = d3.select(".offense")
-// 		.on("change", function() {
-// 			update(this.value, 1000)
-// 		});
-	
-// 	var checkbox = d3.select(".sort")
-// 		.on("click", function() {
-// 			update(select.property("value"), 1000)
-// 		});
-// }
-// }
-
-// Aggregated Plot
-function prepareAggData(){
+// Line Plot
+function linechart(){
 	d3.select("#b5").classed("active",true);
 	initializeChartArea();
     d3.select("#chart-div").insert("div").classed("heading",true);
     	d3.select(".heading").insert("br");
     	d3.select(".heading").insert("br");
-    	d3.select(".heading").insert("h4").text("Frequency of Crimes").style("text-anchor", "start");
+    	d3.select(".heading").insert("h4").text("When the crimes happen?").style("text-anchor", "start");
     	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
-    	d3.select(".parascenes").insert("p").text("You can select different crimes below:"); 
-    	// d3.select(".heading").insert("br");
-    	// d3.select(".selection").insert("br");
-    	// d3.select(".selection").insert("br");
-
-
+    	d3.select(".parascenes").insert("p").text("From the line plot, we can see that the number of crime reaches its peak in 2017"); 
+        d3.select(".parascenes").insert("p").text("Then follows a steady decrease to 2018."); 
+        d3.select(".parascenes").insert("p").text("And the number drops dramatically from 2018 April to 2019 October."); 
         // set the dimensions and margins of the graph
     var margin = {top: 100, right: 20, bottom: 50, left: 70},
     width = 950 - margin.left - margin.right,
@@ -665,9 +510,7 @@ function prepareAggData(){
     .y(function(d) { return y(d.close); })
     .curve(d3.curveMonotoneX);
 
-    // append the svg obgect to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
+
     var svg = d3.select(".chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -677,7 +520,6 @@ function prepareAggData(){
 
     // Get the data
     d3.csv("../dataset/data2.csv").then(function(data) {
-
 
     // format the data
     data.forEach(function(d) {
@@ -692,7 +534,7 @@ function prepareAggData(){
     // Add the valueline path.
     svg.append("path")
     .data([data])
-    .attr("class", "line")
+    .attr("class", "chartLine")
     .attr("d", valueline);
 
     // Add the x Axis
@@ -723,7 +565,7 @@ function loadScene0() {
 	d3.select(".para").insert("p").text("In this crime analysis, you will learn the following:");
 	d3.select(".para").insert("p").text("1. Where does most of the crimes most likely to occur?");
 	d3.select(".para").insert("p").text("2. When does crimes usually happen?");
-	d3.select(".para").insert("p").text("3. What types of offenses happens the most?");
+	d3.select(".para").insert("p").text("3. Which year has the most number of crimes?");
 }
 
 function loadScene1() {
@@ -748,29 +590,8 @@ function loadScene2() {
 	showMonthsAxis();
 }
 
-// function loadScene3() {
-// 	initializeChartArea();
-//     calculateScales3();
-
-//     createOffensesByDayCountBars();
-// 	showOffensesByDayCountBars();
-// 	createOffensesByDayCountAxis();
-// 	showOffensesByDayCountAxis();
-// 	showDaysAxis();
-// }
-
-// function loadScene4() {
-// 	initializeChartArea();
-//     calculateScales4();
-
-//     createOffensesByHourCountBars();
-// 	showOffensesByHourCountBars();
-// 	createOffensesByHourCountAxis();
-// 	showOffensesByHourCountAxis();
-// 	showHoursAxis();
-// }
 
 function loadScene5() {
 	initializeChartArea();
-	prepareAggData();
+	linechart();
 }	
