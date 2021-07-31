@@ -1,18 +1,17 @@
-var dataSet;
+
 var svg;
 
-const canvas = {width: 900, height: 900};
-const margin = {top: 150, bottom: 70, right: 150, left: 70};
+const canvas = {width: 1000, height: 1000};
+const margin = {top: 160, bottom: 60, right: 160, left: 80};
 const chart_dimensions = {
     width: canvas.width - (margin.right + margin.left),
     height: canvas.height - (margin.top + margin.bottom)
 };
 
 
-const offensesByDay = {};
-const offensesByHour = {};
-const offensesByMonth = {};
-const offensesByDistrict = {};
+const crimeNumberByDay = {};
+const crimeNumberByMonth = {};
+const crimeNumberByDistrict = {};
 
 
 const x_district = d3.scaleBand();
@@ -20,17 +19,6 @@ const y_offenseCount = d3.scaleLinear();
 const y_offenseCount_axis = d3.scaleLinear();
 const yAxis = d3.axisLeft();
 
-
-
-const x_days = d3.scaleBand();
-const y_offensesByDayCount = d3.scaleLinear();
-const y_offensesByDayCount_axis = d3.scaleLinear();
-const yAxis2 = d3.axisLeft();
-
-const x_hours = d3.scaleBand();
-const y_offensesByHourCount = d3.scaleLinear();
-const y_offensesByHourCount_axis = d3.scaleLinear();
-const yAxis3 = d3.axisLeft();
 
 const x_months = d3.scaleBand();
 const y_offensesByMonthCount = d3.scaleLinear();
@@ -60,36 +48,26 @@ function loadcsvdata( dataloaded ) {
 			shooting: d.SHOOTING
         };
 		
-		if (!offensesByDistrict[dataobj.district])
-			offensesByDistrict[dataobj.district] = { district: dataobj.district, offenseCount: 0};
+		if (!crimeNumberByDistrict[dataobj.district])
+			crimeNumberByDistrict[dataobj.district] = { district: dataobj.district, offenseCount: 0};
 
-		offensesByDistrict[dataobj.district].offenseCount++;
+		crimeNumberByDistrict[dataobj.district].offenseCount++;
 		
 
-		// if (!offensesByShooting[dataobj.shooting])
-		// 	offensesByShooting[dataobj.shooting] = { district: dataobj.shooting, offenseCount: 0};
+		if (!crimeNumberByDay[dataobj.day])
+				crimeNumberByDay[dataobj.day] = { day: dataobj.day, index: dataobj.day_index, offenseCount: 0};
+
+		crimeNumberByDay[dataobj.day].offenseCount++;
 		
-		// offensesByShooting[dataobj.shooting].offenseCount++;
 
-		if (!offensesByDay[dataobj.day])
-				offensesByDay[dataobj.day] = { day: dataobj.day, index: dataobj.day_index, offenseCount: 0};
+		if (!crimeNumberByMonth[dataobj.month])
+				crimeNumberByMonth[dataobj.month] = { month: dataobj.month, index: dataobj.month_index, offenseCount: 0};
 
-		offensesByDay[dataobj.day].offenseCount++;
-		
-		if (!offensesByHour[dataobj.hour])
-				offensesByHour[dataobj.hour] = { hour: dataobj.hour, offenseCount: 0};
-
-		offensesByHour[dataobj.hour].offenseCount++;
-
-		if (!offensesByMonth[dataobj.month])
-				offensesByMonth[dataobj.month] = { month: dataobj.month, index: dataobj.month_index, offenseCount: 0};
-
-		offensesByMonth[dataobj.month].offenseCount++;
+		crimeNumberByMonth[dataobj.month].offenseCount++;
 	
         return dataobj;
 
     }).then(function(data) {
-        dataSet = data;
         dataloaded();
     });	
 }
@@ -102,9 +80,9 @@ function dataloaded() {
 function calculateScales1(){
 	d3.select("#b1").classed("active",true);
 	d3.select(".selection").selectAll("*").remove();
-	const referenceData = d3.values(offensesByDistrict);
+	const referenceData = d3.values(crimeNumberByDistrict);
 	x_district.range([0, chart_dimensions.width])
-        .domain(d3.keys(offensesByDistrict));
+        .domain(d3.keys(crimeNumberByDistrict));
     y_offenseCount.domain([0, d3.max(referenceData, function(d) { return d.offenseCount; })])
         .range([0, chart_dimensions.height]);
 	y_offenseCount_axis.domain([0, d3.max(referenceData, function(d) { return d.offenseCount; })])
@@ -114,9 +92,9 @@ function calculateScales1(){
 function calculateScales2(){
 	d3.select("#b2").classed("active",true);
 	d3.select(".selection").selectAll("*").remove();
-	const referenceData4 = d3.values(offensesByMonth);
+	const referenceData4 = d3.values(crimeNumberByMonth);
 	x_months.range([0, chart_dimensions.width])
-        .domain(d3.keys(offensesByMonth));
+        .domain(d3.keys(crimeNumberByMonth));
     y_offensesByMonthCount.domain([0, d3.max(referenceData4, function(d) { return d.offenseCount; })])
         .range([0, chart_dimensions.height]);
 	y_offensesByMonthCount_axis.domain([0, d3.max(referenceData4, function(d) { return d.offenseCount; })])
@@ -152,7 +130,7 @@ var div = d3.select("body").append("div");
 	
     d3.select(".chart")
 		.selectAll(".bar-offenseCount")
-        .data(d3.values(offensesByDistrict))
+        .data(d3.values(crimeNumberByDistrict))
         .enter()
         .append("g")
         .classed("bar-offenseCount",true)
@@ -274,7 +252,7 @@ function showDistrictCountAxis() {
 
 function showOffenseAxis() {
     const xAxis = d3.axisBottom().scale(x_district)
-        .ticks(d3.keys(offensesByDistrict));
+        .ticks(d3.keys(crimeNumberByDistrict));
 
     d3.select(".chart").append("g")
         .attr("id", "xAxis")
@@ -344,7 +322,7 @@ var div = d3.select("body").append("div");
 	
     d3.select(".chart")
 		.selectAll(".bar-offenseCount")
-        .data(d3.values(offensesByMonth))
+        .data(d3.values(crimeNumberByMonth))
         .enter()
         .append("g")
         .classed("bar-offenseCount",true)
@@ -456,7 +434,7 @@ function showOffensesByMonthCountAxis() {
 
 function showMonthsAxis() {
     const xAxis = d3.axisBottom().scale(x_months)
-        .ticks(d3.keys(offensesByMonth));
+        .ticks(d3.keys(crimeNumberByMonth));
 
     d3.select(".chart").append("g")
         .attr("id", "xAxis")
@@ -519,7 +497,7 @@ function linechart(){
         "translate(" + margin.left + "," + margin.top + ")");
 
     // Get the data
-    d3.csv("../dataset/data2.csv").then(function(data) {
+    d3.csv("../dataset/data.csv").then(function(data) {
 
     // format the data
     data.forEach(function(d) {
@@ -528,12 +506,12 @@ function linechart(){
     });
 
     // Scale the range of the data
-    x.domain([d3.min(data, function(d) { return d.date; }), d3.max(data, function(d) { return d.date; })]);
+    x.domain(d3.extent(data, function(d){return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d.close; })]);
 
     // Add the valueline path.
     svg.append("path")
-    .data([data])
+    .datum(data)
     .attr("class", "chartLine")
     .attr("d", valueline);
 
