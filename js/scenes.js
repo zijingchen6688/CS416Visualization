@@ -642,26 +642,19 @@ function prepareAggData(){
     	d3.select(".heading").insert("h4").text("Frequency of Crimes").style("text-anchor", "start");
     	d3.select(".heading").insert("div").classed("parascenes",true).style('width','300px').style('height','180px');
     	d3.select(".parascenes").insert("p").text("You can select different crimes below:"); 
-    	d3.select(".heading").insert("br");
-    	// d3.select(".parascenes").insert("p").text("You can also sort the data by checking the box below");
-        
-    	d3.select(".parascenes").insert("div").classed("selection",true);
-    	d3.select(".selection").insert("br");
-    	// d3.select(".selection").insert("h4").text("Select Offense:");
-    	// d3.select(".selection").insert("select").classed("offense",true);
+    	// d3.select(".heading").insert("br");
     	// d3.select(".selection").insert("br");
     	// d3.select(".selection").insert("br");
-    	// d3.select(".selection").insert("input").classed("sort",true).attr("type","checkbox");
-    	// d3.select(".selection").insert("label").text("Let's sort the data now!");
+
 
         // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 20, bottom: 50, left: 70},
+    var margin = {top: 100, right: 20, bottom: 50, left: 70},
     width = 950 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
     // parse the date / time
     var parseTime = d3.timeParse("%d-%b-%y");
-
+    // var parseTime = d3.timeParse("%m/%d/%Y");
     // set the ranges
     var x = d3.scaleTime().range([0, width]);
     var y = d3.scaleLinear().range([height, 0]);
@@ -669,7 +662,8 @@ function prepareAggData(){
     // define the line
     var valueline = d3.line()
     .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.close); });
+    .y(function(d) { return y(d.close); })
+    .curve(d3.curveMonotoneX);
 
     // append the svg obgect to the body of the page
     // appends a 'group' element to 'svg'
@@ -682,16 +676,17 @@ function prepareAggData(){
         "translate(" + margin.left + "," + margin.top + ")");
 
     // Get the data
-    d3.csv("../dataset/data.csv").then(function(data) {
+    d3.csv("../dataset/data2.csv").then(function(data) {
+
 
     // format the data
     data.forEach(function(d) {
-    d.date = parseTime(d.date);
-    d.close = +d.close;
+    d.date = parseTime(d.date),
+    d.close = d.close
     });
 
     // Scale the range of the data
-    x.domain(d3.extent(data, function(d) { return d.date; }));
+    x.domain([d3.min(data, function(d) { return d.date; }), d3.max(data, function(d) { return d.date; })]);
     y.domain([0, d3.max(data, function(d) { return d.close; })]);
 
     // Add the valueline path.
